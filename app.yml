@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+  labels:
+    app: python-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+      - name: python-app
+        image: <your-ecr-url>:latest  # Replace during CI/CD or manually
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Always
+-------
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-service
+spec:
+  type: LoadBalancer  # Change to ClusterIP if you're using Ingress
+  selector:
+    app: python-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
